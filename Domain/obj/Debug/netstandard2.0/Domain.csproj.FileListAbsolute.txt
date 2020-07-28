@@ -1,0 +1,9 @@
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\bin\Debug\netstandard2.0\Domain.deps.json
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\bin\Debug\netstandard2.0\Domain.dll
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\bin\Debug\netstandard2.0\Domain.pdb
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\obj\Debug\netstandard2.0\Domain.csprojAssemblyReference.cache
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\obj\Debug\netstandard2.0\Domain.AssemblyInfoInputs.cache
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\obj\Debug\netstandard2.0\Domain.AssemblyInfo.cs
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\obj\Debug\netstandard2.0\Domain.csproj.CoreCompileInputs.cache
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\obj\Debug\netstandard2.0\Domain.dll
+C:\xampp\htdocs\ndondo\072020\Reactivities\Domain\obj\Debug\netstandard2.0\Domain.pdb
