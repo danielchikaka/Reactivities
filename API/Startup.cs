@@ -1,12 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Net.Security;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Transactions;
 using Application.Activities;
+using API.Middleware;
+using Domain;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,53 +23,51 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistence;
 
-namespace API
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+namespace API {
+    public class Startup {
+        public Startup (IConfiguration configuration) {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<DataContext>(opt =>
-            {
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+        public void ConfigureServices (IServiceCollection services) {
+            services.AddDbContext<DataContext> (opt => {
+                opt.UseSqlite (Configuration.GetConnectionString ("DefaultConnection"));
             });
-            services.AddControllers();
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+            services.AddControllers ();
+            services.AddCors (opt => {
+                opt.AddPolicy ("CorsPolicy", policy => {
+                    policy.AllowAnyHeader ().AllowAnyMethod ().WithOrigins ("http://localhost:3000");
                 });
             });
-            services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddMediatR (typeof (List.Handler).Assembly);
+            services.AddControllers ().AddFluentValidation (cfg => {
+                cfg.RegisterValidatorsFromAssemblyContaining<Create> ();
+            });
+            services.AddDefaultIdentity<AppUser> ()
+                .AddEntityFrameworkStores<DataContext> ();
+            services.AddAuthentication();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {
+            app.UseMiddleware<ErrorHandlingMiddleware> ();
+            if (env.IsDevelopment ()) {
+                app.UseDeveloperExceptionPage ();
             }
 
             // app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseRouting ();
 
-            app.UseAuthorization();
-            app.UseCors("CorsPolicy");
+            app.UseAuthorization ();
+            app.UseCors ("CorsPolicy");
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
+            app.UseEndpoints (endpoints => {
+                endpoints.MapControllers ();
             });
 
         }

@@ -1,19 +1,20 @@
-﻿using System.Diagnostics;
+﻿using Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Domain;
 
 namespace Persistence
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser>
     {
         public DataContext(DbContextOptions options) : base(options)
         {
-
-
         }
 
-        // Declare enities
-        public DbSet<Domain.Activity> Activities { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
     }
 }

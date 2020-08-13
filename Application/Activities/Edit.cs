@@ -1,6 +1,9 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -17,7 +20,19 @@ namespace Application.Activities
             public DateTime? Date { get; set; }
             public string City { get; set; }
             public string Venue { get; set; }
+        }
 
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Title).NotEmpty();
+                RuleFor(x => x.Description).NotEmpty();
+                RuleFor(x => x.Category).NotEmpty();
+                RuleFor(x => x.Date).NotEmpty();
+                RuleFor(x => x.City).NotEmpty();
+                RuleFor(x => x.Venue).NotEmpty();
+            }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -26,14 +41,14 @@ namespace Application.Activities
             public Handler(DataContext context)
             {
                 _context = context;
-
             }
+
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
                 var activity = await _context.Activities.FindAsync(request.Id);
 
                 if (activity == null)
-                    throw new Exception("Could not find activity");
+                    throw new RestException(HttpStatusCode.NotFound, new { Activity = "Not found" });
 
                 activity.Title = request.Title ?? activity.Title;
                 activity.Description = request.Description ?? activity.Description;
@@ -43,6 +58,7 @@ namespace Application.Activities
                 activity.Venue = request.Venue ?? activity.Venue;
 
                 var success = await _context.SaveChangesAsync() > 0;
+
                 if (success) return Unit.Value;
 
                 throw new Exception("Problem saving changes");
