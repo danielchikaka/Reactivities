@@ -1,26 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Net.Security;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
+using System.Data.Common;
 using System.Transactions;
 using Application.Activities;
+using Application.Interfaces;
 using API.Middleware;
 using Domain;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Persistence;
 
 namespace API {
@@ -48,7 +39,8 @@ namespace API {
             });
             services.AddDefaultIdentity<AppUser> ()
                 .AddEntityFrameworkStores<DataContext> ();
-            services.AddAuthentication();
+            services.AddAuthentication ();
+            // services.AddScoped<IJwtGenerator, JwtGenerator> ();
 
         }
 
